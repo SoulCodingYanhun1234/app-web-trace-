@@ -96,6 +96,18 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column label="展示编号" :width="140">
+          <template #default="{ row }">
+            <div class="code-id-cell">
+              <span>{{ qrShortCode(row.id) }}</span>
+              <el-tooltip content="复制展示编号" placement="top">
+                <el-button class="copy-code-id-button" text circle size="small" aria-label="复制展示编号" @click.stop="copyShortCode(row)">
+                  <AppIcon name="copy" :size="14" />
+                </el-button>
+              </el-tooltip>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="防伪码" prop="code" :width="250">
           <template #default="{ row }">
             <div class="code-value-cell">
@@ -159,7 +171,7 @@
     </IosTablePanel>
 
     <el-dialog v-model="generateVisible" title="批量生成防伪码" width="720px" align-center destroy-on-close append-to-body :lock-scroll="true">
-      <el-alert class="form-low-code-tips" type="info" :closable="false" show-icon>选择产品后会自动带出生产批号；生成防伪码不需要设置地区，发货时再按实际发货位置确定授权地区。</el-alert>
+      <el-alert class="form-low-code-tips" type="info" :closable="false" show-icon>新防伪码默认使用紧凑安全格式；选择产品后会自动带出生产批号，授权地区在发货时按收货代理商确定。</el-alert>
       <el-form :model="generateForm" label-position="top">
         <el-form-item label="关联产品" required><SearchableSelect v-model="generateForm.product_id" :options="productOptions" style="width:100%" placeholder="请选择产品" @change="onGenerateProductChange" /></el-form-item>
         <el-alert
@@ -184,10 +196,6 @@
             placeholder="选择产品后自动带出，也可下拉选择或手动输入"
           />
           <div class="field-help">优先关联产品资料中的批号；下拉列表同时显示该产品已使用过的历史批号，也可手动录入新批号。</div>
-        </el-form-item>
-        <el-form-item label="前缀">
-          <el-input v-model="generateForm.prefix" placeholder="如：ABC" />
-          <div class="field-quick-options"><span class="muted">常用前缀：</span><el-tag v-for="p in ['TR', 'QR', 'AF', 'VIP']" :key="p" class="quick-option-tag" @click="generateForm.prefix=p">{{ p }}</el-tag></div>
         </el-form-item>
         <el-form-item label="防伪码过期日期（可选）">
           <el-date-picker v-model="generateForm.expires_at" type="date" value-format="YYYY-MM-DD" clearable style="width:100%" placeholder="不填则长期有效" />
@@ -340,7 +348,7 @@ import SearchableSelect from '@/components/SearchableSelect.vue';
 import { boxApi, codesApi, exportApi, manufacturersApi, partnersApi, productsApi } from '@/api/resources';
 import { clearRequestCache } from '@/api/http';
 import { statusMaps, toOptions } from '@/constants/status';
-import { cleanObject, displayValue, fmtTime, normalizePage } from '@/utils/format';
+import { cleanObject, displayValue, fmtTime, normalizePage, qrShortCode } from '@/utils/format';
 import { debounce } from '@/utils/performance';
 import { parseImportFile } from '@/utils/excelImport';
 import { useAuthStore } from '@/stores/auth';
@@ -431,13 +439,13 @@ const generateOwnerSummary = computed(() => {
   if (!product) return '';
   const dealer = String(product.product_owner_name || '').trim();
   if (dealer) return `产品所属经销商：${dealer}；防伪码发货前不需要位置授权`;
-  return '防伪码发货前不需要位置授权；发货后按发货位置校验';
+  return '防伪码发货前不需要位置授权；发货后按收货代理商所属地区校验';
 });
 
 function codeAuthorizationRegionText(row: any) {
   if (row?.anti_channeling_enabled === false) return '无需授权位置';
   if (Number(row?.box_status || 0) < 2) return '发货前无需授权';
-  return [row.province_name, row.city_name].filter(Boolean).join(' / ') || row.region_group || '发货位置待设置';
+  return [row.province_name, row.city_name].filter(Boolean).join(' / ') || row.region_group || '收货代理商所属地区待设置';
 }
 
 async function copyText(value: unknown, label: string, missingMessage: string) {
@@ -465,6 +473,10 @@ async function copyText(value: unknown, label: string, missingMessage: string) {
 
 function copyCodeId(row: any) {
   return copyText(row?.id, '防伪码ID', '当前防伪码缺少ID');
+}
+
+function copyShortCode(row: any) {
+  return copyText(qrShortCode(row?.id), '展示编号', '当前防伪码缺少展示编号');
 }
 
 function copyCode(row: any) {

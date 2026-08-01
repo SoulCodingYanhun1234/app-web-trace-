@@ -92,7 +92,7 @@ import type { BrowserQRCodeReader, IScannerControls } from '@zxing/browser';
 import { Camera, CameraOff, RefreshCw } from 'lucide-vue-next';
 import AppIcon from './AppIcon.vue';
 import { splitCodes } from '@/utils/format';
-import { appendUniqueLine, createScannerBuffer, normalizeScannedText, playScanBeep, splitScannedCodes } from '@/utils/scanner';
+import { appendUniqueLine, createScannerBuffer, normalizeScannedText, playScanBeep, primeScanAudio, splitScannedCodes } from '@/utils/scanner';
 
 type InputMode = 'scanner' | 'camera' | 'manual';
 
@@ -231,6 +231,7 @@ function stopCamera() {
 async function startCamera(deviceId = '') {
   if (cameraStarting.value || cameraRunning.value || !props.active || inputMode.value !== 'camera') return;
   cameraError.value = '';
+  primeScanAudio();
   if (!navigator.mediaDevices?.getUserMedia) {
     cameraError.value = window.isSecureContext ? '当前浏览器不支持手机扫码。' : '手机扫码需要通过 HTTPS 访问。';
     return;
@@ -282,7 +283,9 @@ async function switchCamera() {
 function submitManual() {
   const code = manualCode.value;
   manualCode.value = '';
-  handleScan(code, 'manual');
+  // The capture input is focused by default, so a USB scanner reaches this
+  // handler through Enter/Tab instead of the global keyboard listener.
+  handleScan(code, inputMode.value === 'scanner' ? 'scanner' : 'manual');
   focusInput();
 }
 

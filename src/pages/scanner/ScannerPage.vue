@@ -24,15 +24,18 @@
           <el-form-item v-if="activeWorkflow?.targetLabel" :label="activeWorkflow.targetLabel">
             <el-input v-model="targetId" :placeholder="targetPlaceholder" clearable />
           </el-form-item>
-          <el-form-item v-if="workflow === 'shipment_shipping' && batchMode" label="被发货代理商">
-            <el-select v-model="payload.agent_id" filterable clearable style="width: 100%" placeholder="选择 A 代理商；不选则需填写发货单ID/单号">
+          <el-form-item v-if="workflow === 'shipment_shipping' && batchMode" label="收件人（代理商）">
+            <el-select v-model="payload.agent_id" filterable clearable style="width: 100%" placeholder="请选择收件代理商" @change="handleShipmentAgentChange">
               <el-option v-for="agent in agentOptions" :key="agent.value" :label="agent.label" :value="agent.value" />
             </el-select>
-            <div class="form-tip">批量扫箱码后点击执行，系统会自动创建一张发货单；该代理商仅用于收货与责任归属。</div>
+            <div class="form-tip">批量扫箱码后点击执行，系统会自动创建发货单，并以该代理商的所属地区作为授权位置。</div>
           </el-form-item>
-          <el-form-item v-if="workflow === 'shipment_shipping' && batchMode && !targetId" label="发货位置（防伪码授权位置）">
-            <el-input v-model="payload.sender_address" placeholder="例如：广东省广州市天河区××路 88 号" clearable />
-            <div class="form-tip">批量新建发货单时必填。所有关联防伪码均以该发货位置作为唯一授权位置，不能填写“公司仓库”等无省市简称。</div>
+          <el-form-item v-if="workflow === 'shipment_shipping' && batchMode && !targetId" label="发货地区">
+            <el-cascader v-model="payload.sender_region_path" :options="chinaRegionOptions" :props="{ emitPath: true, checkStrictly: true, expandTrigger: 'hover' }" disabled style="width: 100%" placeholder="选择代理商后自动带出" />
+          </el-form-item>
+          <el-form-item v-if="workflow === 'shipment_shipping' && batchMode && !targetId" label="发货详细位置">
+            <el-input v-model="payload.sender_detail_address" placeholder="选择代理商后自动带出" disabled />
+            <div class="form-tip">发货位置自动取自代理商档案；授权位置仅使用代理商所属地区。</div>
           </el-form-item>
           <el-form-item v-if="workflow === 'shipment_shipping' && batchMode" label="归属地区">
             <el-select v-model="payload.region_id" filterable clearable style="width: 100%" placeholder="选择地区分类；可和代理商一起归属">
@@ -136,6 +139,7 @@ import DetailDescriptions from '@/components/DetailDescriptions.vue';
 import ScannerInput from '@/components/ScannerInput.vue';
 import { IosPage, IosPageHero } from '@/components/ios27';
 import { agentsApi, productRegionsApi, scannerApi, systemApi } from '@/api/resources';
+import { chinaRegionOptions } from '@/data/chinaRegionOptions';
 import { displayValue, fmtTime } from '@/utils/format';
 import { splitScannedCodes } from '@/utils/scanner';
 import { useAuthStore } from '@/stores/auth';
@@ -152,9 +156,9 @@ const batchCodes = ref('');
 const lastResult = ref<any>(null);
 const workflows = ref<Workflow[]>([]);
 const settings = reactive<any>({ scanner_enabled: true, scanner_global_listen: true, scanner_min_length: 3, scanner_interval_ms: 80, scanner_submit_key: 'enter_tab', enabled_workflows: [] });
-const payload = reactive<any>({ logistics_company: '', logistics_no: '', sender_address: '', box_capacity: 0, expected_count: 0, box_spec: '', agent_id: undefined, region_id: undefined });
+const payload = reactive<any>({ logistics_company: '', logistics_no: '', sender_region_path: [], sender_detail_address: '', box_capacity: 0, expected_count: 0, box_spec: '', agent_id: undefined, region_id: undefined });
 const history = ref<any[]>([]);
-const agentOptions = ref<Array<{ label: string; value: number; agent_name?: string; agent_code?: string }>>([]);
+const agentOptions = ref<Array<{ label: string; value: number; agent_name?: string; agent_code?: string; province?: string; city?: string; district?: string; address?: string }>>([]);
 const regionOptions = ref<Array<{ label: string; value: number; region_group?: string; province_name?: string; city_name?: string; product_name?: string; product_code?: string }>>([]);
 let autoBindingSubmitting = false;
 let boxBindResolveSeq = 0;
@@ -286,6 +290,14 @@ async function loadAgents() {
   }
 }
 
+function handleShipmentAgentChange(value: unknown) {
+  const agent = agentOptions.value.find((item) => Number(item.value) === Number(value));
+  payload.sender_region_path = agent
+    ? [agent.province, agent.city, agent.district].map((item) => String(item || '').trim()).filter(Boolean)
+    : [];
+  payload.sender_detail_address = String(agent?.address || '').trim();
+}
+
 async function loadRegions() {
   try {
     const res = await productRegionsApi.list({ page: 1, pageSize: 1000 });
@@ -330,8 +342,14 @@ function validateBeforeExecute() {
       return false;
     }
   }
-  if (workflow.value === 'shipment_shipping' && batchMode.value && !targetId.value && !payload.agent_id && !payload.region_id) { Message.warning('批量发货请先选择被发货代理商/归属地区，或填写发货单ID/单号'); return false; }
-  if (workflow.value === 'shipment_shipping' && batchMode.value && !targetId.value && !String(payload.sender_address || '').trim()) { Message.warning('批量新建发货单请填写完整发货位置；该位置是防伪码授权位置'); return false; }
+  if (workflow.value === 'shipment_shipping' && batchMode.value && !targetId.value && !payload.agent_id) { Message.warning('批量发货请先选择收件代理商，或填写发货单ID/单号'); return false; }
+  if (workflow.value === 'shipment_shipping' && batchMode.value && !targetId.value) {
+    const senderRegionPath = Array.isArray(payload.sender_region_path) ? payload.sender_region_path.map((item: any) => String(item || '').trim()).filter(Boolean) : [];
+    const senderDetailAddress = String(payload.sender_detail_address || '').trim();
+    if (!senderRegionPath.length) { Message.warning('所选代理商尚未配置所属地区，请先完善代理商档案'); return false; }
+    if (!senderDetailAddress) { Message.warning('所选代理商尚未配置详细地址，请先完善代理商档案'); return false; }
+    payload.sender_address = `${Array.from(new Set(senderRegionPath)).join('')}${senderDetailAddress}`;
+  }
   return true;
 }
 

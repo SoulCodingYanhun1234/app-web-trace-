@@ -27,27 +27,68 @@ export function appendUniqueLine(text: string, code: string) {
 }
 
 let beepContext: AudioContext | null = null;
+let scanAudio: HTMLAudioElement | null = null;
 
-export function playScanBeep() {
+function getAudioContext() {
+  if (typeof window === 'undefined') return null;
+  const Ctor = window.AudioContext || (window as any).webkitAudioContext;
+  if (!Ctor) return null;
+  beepContext ||= new Ctor();
+  return beepContext;
+}
+
+function getScanAudio() {
+  if (typeof window === 'undefined' || typeof Audio === 'undefined') return null;
+  scanAudio ||= new Audio(new URL('/sounds/scan-success.mp3', window.location.href).toString());
+  scanAudio.preload = 'auto';
+  return scanAudio;
+}
+
+/** Warm up audio from a user interaction, such as starting the camera. */
+export function primeScanAudio() {
   try {
-    const Ctor = window.AudioContext || (window as any).webkitAudioContext;
-    if (!Ctor) return;
-    beepContext ||= new Ctor();
-    if (beepContext.state === 'suspended') void beepContext.resume();
-    const oscillator = beepContext.createOscillator();
-    const gain = beepContext.createGain();
+    getScanAudio()?.load();
+    const context = getAudioContext();
+    if (context?.state === 'suspended') void context.resume().catch(() => undefined);
+  } catch {
+    // Audio is optional feedback; scanning must continue when a browser blocks it.
+  }
+}
+
+async function playSynthesizedBeep() {
+  const context = getAudioContext();
+  if (!context) return;
+  try {
+    if (context.state === 'suspended') await context.resume();
+    if (context.state !== 'running') return;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
     oscillator.type = 'sine';
     oscillator.frequency.value = 1600;
     oscillator.connect(gain);
-    gain.connect(beepContext.destination);
-    const now = beepContext.currentTime;
+    gain.connect(context.destination);
+    const now = context.currentTime;
     gain.gain.setValueAtTime(0.0001, now);
     gain.gain.exponentialRampToValueAtTime(0.35, now + 0.004);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
     oscillator.start(now);
     oscillator.stop(now + 0.1);
   } catch {
-    // 部分浏览器/无用户交互场景下音频播放会被拒绝，静默忽略即可
+    // Audio is optional feedback; scanning must continue when a browser blocks it.
+  }
+}
+
+export function playScanBeep() {
+  try {
+    const audio = getScanAudio();
+    if (!audio) {
+      void playSynthesizedBeep();
+      return;
+    }
+    audio.currentTime = 0;
+    void audio.play().catch(() => playSynthesizedBeep());
+  } catch {
+    void playSynthesizedBeep();
   }
 }
 

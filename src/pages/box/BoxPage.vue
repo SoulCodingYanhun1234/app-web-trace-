@@ -221,7 +221,7 @@ const config = reactive({
     description: '创建箱子并记录关联产品和装箱地点；装箱不会给防伪码设置授权位置。',
     formTips: ['选择产品后会自动带出所属公司和装箱地点。', '装箱公司或代理商仅用于业务流转记录，不参与防伪码位置授权。', '确认箱内码无误后点击封箱，只有封箱后的箱子才能加入发货单。'],
     steps: [
-      { title: '创建装箱码', description: '填写装箱信息后，系统自动生成 QRB月.日-当天流水号。' },
+      { title: '创建装箱码', description: '填写装箱信息后，系统自动生成不含日期的全局箱码编号。' },
       { title: '粘贴扫码内容', description: '点击“加码”，直接粘贴扫码枪、Excel 或逗号分隔内容。' },
       { title: '系统自动去重', description: '提交前可看到有效数量和重复数量。' },
       { title: '封箱', description: '确认数量无误后点击封箱。' },
@@ -255,7 +255,7 @@ const config = reactive({
   ],
   formFields: [
     { key: 'product_id', label: '关联产品', type: 'select', options: [] as any[], placeholder: '请选择产品', onChange: handleProductChange, help: '选择产品后会自动带出批次号。' },
-    { key: 'box_no', label: '箱码编号', disabled: true, placeholder: '保存后系统自动生成', help: '固定格式：QRB月.日-当天流水号，例如 QRB07.18-1、QRB07.18-2；每天从 1 重新开始。创建后不可修改。' },
+    { key: 'box_no', label: '箱码编号', disabled: true, placeholder: '保存后系统自动生成', help: '固定格式：QRB-全局编号，例如 QRB-1、QRB-2；编号中不含日期，创建后不可修改。' },
     { key: 'batch_no', label: '批次号', placeholder: '可选；选择产品或加码后可自动带出' },
     { key: 'box_capacity', label: '箱容量', type: 'number', required: true, quickOptions: ['6', '12', '24', '48'] },
     { key: 'box_spec', label: '箱规', quickOptions: ['6件/箱', '12件/箱', '24件/箱', '48件/箱'] },

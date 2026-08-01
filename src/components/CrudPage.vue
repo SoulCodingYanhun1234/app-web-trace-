@@ -405,7 +405,7 @@ const defaultLabelMap: Record<string, string> = {
   code: '防伪码', batch_no: '生产批号', query_count: '查询次数', activated_at: '激活时间', first_query_at: '首次查询时间', last_query_at: '最后查询时间',
   trace_no: '溯源编号', anti_fake_code: '防伪码', production_date: '生产日期', expiry_date: '过期日期', production_place: '生成地点', manufacturer: '公司', trace_chain: '溯源链',
   box_no: '箱号', box_capacity: '箱容量', box_spec: '箱规', box_type: '箱型', codes: '箱内防伪码', code_count: '数量',
-  shipment_no: '发货单号', agent_id: '代理商ID', agent_label: '代理商', shipment_label: '关联发货单', box_ids: '箱子ID', box_count: '箱数', logistics_company: '物流公司', logistics_no: '物流单号', sender: '发件人', sender_address: '发货位置（授权位置）', receiver: '收件人', receiver_phone: '收件电话', receiver_address: '收件地址', remark: '备注',
+  shipment_no: '发货单号', agent_id: '代理商ID', agent_label: '代理商', shipment_label: '关联发货单', box_ids: '箱子ID', box_count: '箱数', logistics_company: '物流公司', logistics_no: '物流单号', sender: '发件人', sender_address: '发货位置', receiver: '收件代理商', receiver_phone: '收件电话', receiver_address: '收件地址', authorization_address: '授权位置（代理商所属地区）', remark: '备注',
   agent_code: '代理商编号', agent_name: '代理商名称', contact_name: '联系人', contact_phone: '联系电话', contact_email: '联系邮箱', province: '省份', city: '城市', address: '详细地址', business_license: '营业执照号', level: '代理等级', parent_id: '上级代理ID',
   return_code_count: '退货码数量', created_at: '创建时间', updated_at: '更新时间',
 };

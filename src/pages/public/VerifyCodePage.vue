@@ -373,7 +373,7 @@ const shipmentAuthorizationPartyName = computed(() => locationAuthorizationRequi
 const shipmentAuthorizationRegion = computed(() => locationAuthorizationRequired.value
   ? String(shipmentAuthorization.value?.authorized_region || shipmentAuthorization.value?.region_group || [shipmentAuthorization.value?.province_name, shipmentAuthorization.value?.city_name].filter(Boolean).join(' / ')).trim()
   : '');
-const authorizationExplain = computed(() => '该码已发货，授权区域以发货单填写的发货位置为准。');
+const authorizationExplain = computed(() => '该码已发货，授权区域以发货时选择的收货代理商所属地区为准。');
 const verifyProductName = computed(() => String(product.value.product_name || result.value?.product_name || result.value?.product_info?.product_name || result.value?.code_owner?.product_name || '产品').trim());
 const verifyProductId = computed(() => String(product.value.product_code || result.value?.product_code || result.value?.trace_no || traceCode.value || '').trim());
 const authorizationStatus = computed(() => String(result.value?.authorization_status || antiChannelingInfo.value.authorization_status || '').trim());
@@ -386,7 +386,7 @@ const antiChannelingRiskTitle = computed(() => isAuthorizationUnresolved.value
     ? '本次扫码位置待核验'
     : '本次扫码不在授权销售区域');
 const antiChannelingRiskHint = computed(() => isAuthorizationUnresolved.value
-  ? '该码已发货，但发货位置尚未完成配置，请联系官方客服核验购买渠道。'
+  ? '该码已发货，但收货代理商所属地区尚未完成配置，请联系官方客服核验购买渠道。'
   : isLocationUnverified.value
     ? '位置核验通过前不会展示产品详情，请检查网络后重新扫码或联系官方客服。'
     : `系统已记录 ${antiChannelingAlertCount.value} 条防窜货预警，请核验购买渠道或联系官方客服。`);

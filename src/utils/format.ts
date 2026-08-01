@@ -122,6 +122,12 @@ export function asArray(data: any) {
   return [];
 }
 
+export function qrShortCode(id: unknown) {
+  const n = Number(id);
+  if (!Number.isInteger(n) || n <= 0) return '';
+  return `Qr${String(n).padStart(8, '0')}`;
+}
+
 export function displayValue(value: any) {
   if (value === null || value === undefined || value === '') return '-';
   if (typeof value === 'object') return JSON.stringify(value, null, 2);
