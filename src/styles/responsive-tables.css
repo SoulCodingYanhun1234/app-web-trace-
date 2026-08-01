@@ -1,0 +1,55 @@
+/* Shared table sizing: preserve readable columns and expose every column at narrow widths. */
+.responsive-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto !important;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.responsive-table-wrap > .el-table,
+.responsive-table-wrap > .el-auto-resizer,
+.table-card,
+.table-card .el-card__body,
+.el-table,
+.el-table__inner-wrapper {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.responsive-table-wrap > .el-table {
+  width: 100% !important;
+}
+
+.el-table__body-wrapper .el-scrollbar__wrap {
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 760px) {
+  .responsive-table-wrap > .el-table {
+    width: max(100%, 640px) !important;
+    max-width: none;
+  }
+
+  /* A fixed action column can cover most of a phone screen; keep it in the scroll flow. */
+  .responsive-table-wrap .el-table-fixed-column--left,
+  .responsive-table-wrap .el-table-fixed-column--right {
+    position: static !important;
+    right: auto !important;
+    left: auto !important;
+    box-shadow: none !important;
+  }
+
+  .responsive-table-wrap .el-scrollbar__bar.is-horizontal {
+    height: 9px;
+    opacity: 1;
+  }
+
+  .responsive-table-wrap .el-scrollbar__bar.is-horizontal .el-scrollbar__thumb {
+    opacity: .72;
+  }
+}

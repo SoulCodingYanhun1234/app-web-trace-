@@ -1,0 +1,605 @@
+/* ===================================
+   Enhanced Table & List Styles
+   增强表格与列表样式
+   =================================== */
+
+/* ============= 现代化表格样式 ============= */
+
+.modern-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--line);
+}
+
+.modern-table thead {
+  background: linear-gradient(180deg,
+    rgba(239, 246, 255, 0.95) 0%,
+    rgba(249, 250, 251, 0.9) 100%);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.modern-table thead th {
+  padding: 16px 20px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-2);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--line);
+  white-space: nowrap;
+}
+
+.modern-table tbody tr {
+  transition: all 0.24s var(--ease-in-out);
+  position: relative;
+}
+
+.modern-table tbody tr::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--line-light);
+}
+
+.modern-table tbody tr:hover {
+  background: linear-gradient(90deg,
+    rgba(37, 99, 235, 0.04) 0%,
+    rgba(96, 165, 250, 0.02) 100%);
+  transform: translateX(4px);
+}
+
+.modern-table tbody tr:hover::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--primary), var(--primary-light));
+  border-radius: 0 3px 3px 0;
+}
+
+.modern-table tbody td {
+  padding: 16px 20px;
+  font-size: 14px;
+  color: var(--text-1);
+  border: none;
+}
+
+.modern-table tbody tr:last-child::after {
+  display: none;
+}
+
+/* 表格交替行 */
+.modern-table tbody tr:nth-child(even) {
+  background: rgba(248, 250, 252, 0.5);
+}
+
+/* 表格排序指示器 */
+.table-sort {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 20px;
+}
+
+.table-sort::after {
+  content: '⇅';
+  position: absolute;
+  right: 0;
+  opacity: 0.3;
+  font-size: 12px;
+  transition: opacity 0.24s;
+}
+
+.table-sort:hover::after {
+  opacity: 0.7;
+}
+
+.table-sort.asc::after {
+  content: '↑';
+  opacity: 1;
+  color: var(--primary);
+}
+
+.table-sort.desc::after {
+  content: '↓';
+  opacity: 1;
+  color: var(--primary);
+}
+
+/* 深色模式表格 */
+html[data-theme="dark"] .modern-table thead {
+  background: linear-gradient(180deg,
+    rgba(30, 41, 59, 0.95) 0%,
+    rgba(15, 23, 42, 0.9) 100%);
+}
+
+html[data-theme="dark"] .modern-table tbody tr:nth-child(even) {
+  background: rgba(30, 41, 59, 0.3);
+}
+
+html[data-theme="dark"] .modern-table tbody tr:hover {
+  background: linear-gradient(90deg,
+    rgba(59, 130, 246, 0.08) 0%,
+    rgba(96, 165, 250, 0.04) 100%);
+}
+
+/* ============= 卡片式表格 ============= */
+
+.card-table {
+  display: grid;
+  gap: 12px;
+}
+
+.card-table-row {
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  transition: all 0.24s var(--ease-in-out);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-table-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--primary);
+  transform: scaleY(0);
+  transition: transform 0.24s var(--ease-in-out);
+}
+
+.card-table-row:hover {
+  border-color: var(--primary-alpha-30);
+  box-shadow: var(--shadow-primary);
+  transform: translateY(-2px);
+}
+
+.card-table-row:hover::before {
+  transform: scaleY(1);
+}
+
+.card-table-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-table-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.card-table-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+/* ============= 时间线列表 ============= */
+
+.timeline-list {
+  position: relative;
+  padding-left: 32px;
+}
+
+.timeline-list::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: linear-gradient(180deg,
+    var(--primary) 0%,
+    var(--primary-light) 50%,
+    var(--line) 100%);
+}
+
+.timeline-item {
+  position: relative;
+  padding: 16px 0 16px 24px;
+  margin-bottom: 8px;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 20px;
+  width: 10px;
+  height: 10px;
+  background: var(--primary);
+  border: 3px solid var(--surface);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--primary-alpha-20);
+  z-index: 1;
+}
+
+.timeline-item.active::before {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.timeline-item:last-child::before {
+  background: var(--text-4);
+  box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.2);
+}
+
+.timeline-content {
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  transition: all 0.24s var(--ease-in-out);
+}
+
+.timeline-content:hover {
+  border-color: var(--primary-alpha-30);
+  box-shadow: var(--shadow-sm);
+  transform: translateX(4px);
+}
+
+.timeline-time {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  margin-bottom: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--primary-alpha-10);
+  border-radius: var(--radius-sm);
+}
+
+.timeline-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: 6px;
+}
+
+.timeline-desc {
+  font-size: 13px;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
+/* ============= 网格卡片列表 ============= */
+
+.grid-card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.grid-card {
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: all 0.3s var(--ease-in-out);
+  position: relative;
+  overflow: hidden;
+}
+
+.grid-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, var(--primary-alpha-10), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.grid-card:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-primary);
+  transform: translateY(-6px) scale(1.02);
+}
+
+.grid-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.grid-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-alpha-10), var(--primary-alpha-20));
+  color: var(--primary);
+  flex-shrink: 0;
+  transition: all 0.3s var(--ease-bounce);
+}
+
+.grid-card:hover .grid-card-icon {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 6px 20px var(--primary-alpha-40);
+}
+
+.grid-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: 4px;
+}
+
+.grid-card-subtitle {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.grid-card-body {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.grid-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-light);
+}
+
+/* ============= 列表组 ============= */
+
+.list-group {
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.list-group-item {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.24s var(--ease-in-out);
+  border-bottom: 1px solid var(--line-light);
+  cursor: pointer;
+  position: relative;
+}
+
+.list-group-item:last-child {
+  border-bottom: none;
+}
+
+.list-group-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--primary);
+  transform: scaleX(0);
+  transition: transform 0.24s var(--ease-in-out);
+}
+
+.list-group-item:hover {
+  background: var(--primary-alpha-10);
+  padding-left: 26px;
+}
+
+.list-group-item:hover::before {
+  transform: scaleX(1);
+}
+
+.list-group-item.active {
+  background: var(--primary-alpha-10);
+  color: var(--primary);
+  padding-left: 26px;
+}
+
+.list-group-item.active::before {
+  transform: scaleX(1);
+}
+
+.list-group-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-alpha-10);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.list-group-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.list-group-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: 2px;
+}
+
+.list-group-desc {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.list-group-action {
+  flex-shrink: 0;
+}
+
+/* ============= 数据列表 ============= */
+
+.data-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--line-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  padding: 2px;
+}
+
+.data-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  transition: all 0.24s var(--ease-in-out);
+}
+
+.data-list-item:hover {
+  background: var(--primary-alpha-10);
+  padding-left: 24px;
+}
+
+.data-list-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.data-list-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-1);
+  text-align: right;
+}
+
+/* ============= 响应式优化 ============= */
+
+@media (max-width: 768px) {
+  .modern-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .grid-card-list {
+    grid-template-columns: 1fr;
+  }
+
+  .card-table-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============= 空状态 ============= */
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-3);
+}
+
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-alpha-10), var(--primary-alpha-20));
+  color: var(--primary);
+  font-size: 36px;
+}
+
+.empty-state-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+
+.empty-state-desc {
+  font-size: 14px;
+  color: var(--text-3);
+  line-height: 1.6;
+  max-width: 400px;
+  margin: 0 auto 24px;
+}
+
+/* ============= 加载骨架屏 ============= */
+
+.skeleton {
+  background: linear-gradient(90deg,
+    var(--bg-3) 0%,
+    var(--bg-4) 50%,
+    var(--bg-3) 100%);
+  background-size: 200% 100%;
+  animation: skeleton 1.5s ease-in-out infinite;
+  border-radius: var(--radius);
+}
+
+.skeleton-text {
+  height: 16px;
+  margin-bottom: 8px;
+}
+
+.skeleton-title {
+  height: 24px;
+  width: 60%;
+  margin-bottom: 12px;
+}
+
+.skeleton-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.skeleton-card {
+  height: 200px;
+  border-radius: var(--radius-lg);
+}
+
+@keyframes skeleton {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
