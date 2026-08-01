@@ -1,0 +1,11 @@
+{
+  "name": "trace-enterprise-authorization-admin",
+  "version": "20260704-login-dashboard-stuck-fix",
+  "builtAt": "2026-07-04",
+  "fixes": [
+    "login-success-dashboard-loading-stuck",
+    "core-route-dynamic-chunk-failure",
+    "router-ready-blocking-mount",
+    "legacy-cache-and-service-worker"
+  ]
+}

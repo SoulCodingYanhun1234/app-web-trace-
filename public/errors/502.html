@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>502 - 服务暂时不可用</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body { min-width: 280px; margin: 0; color: #162033; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif; background: radial-gradient(circle at 14% 18%, rgba(75,151,255,.20), transparent 30%), radial-gradient(circle at 86% 84%, rgba(90,224,181,.18), transparent 32%), linear-gradient(145deg, #f9fcff, #eef5ff 52%, #f6fbf9); }
+    main { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 28px; }
+    .card { position: relative; width: min(580px,100%); overflow: hidden; padding: clamp(32px,7vw,64px); text-align: center; border: 1px solid rgba(91,130,183,.18); border-radius: 30px; background: rgba(255,255,255,.84); box-shadow: 0 28px 70px rgba(26,74,137,.16), inset 0 1px rgba(255,255,255,.82); backdrop-filter: blur(16px); }
+    .orb { position:absolute; border-radius:50%; pointer-events:none; }
+    .orb.a { width:156px; height:156px; top:-84px; right:-52px; background:rgba(47,119,255,.10); }
+    .orb.b { width:96px; height:96px; bottom:-42px; left:-32px; background:rgba(43,203,143,.11); }
+    .kicker { position:relative; margin:0; color:#5d7ca8; font-size:12px; font-weight:800; letter-spacing:.15em; }
+    .code { position:relative; margin:12px 0 4px; color:#ec7e2d; font-size:clamp(78px,17vw,144px); font-weight:850; line-height:.95; letter-spacing:-.075em; text-shadow:0 12px 28px rgba(236,126,45,.14); }
+    h1 { position:relative; margin:22px 0 12px; font-size:clamp(24px,4vw,32px); line-height:1.25; }
+    .message { position:relative; max-width:420px; margin:0 auto; color:#62718a; font-size:15px; line-height:1.8; }
+    .actions { position:relative; display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin-top:28px; }
+    button,a { min-width:132px; min-height:42px; padding:0 18px; border:1px solid #d7e2f1; border-radius:12px; color:#35516f; background:#fff; cursor:pointer; font:inherit; font-weight:700; line-height:42px; text-decoration:none; transition:transform .18s ease, box-shadow .18s ease; }
+    button:hover,a:hover { transform:translateY(-1px); box-shadow:0 10px 22px rgba(45,91,150,.14); }
+    .primary { border-color:#ec7e2d; color:#fff; background:linear-gradient(135deg,#ec7e2d,#f4aa61); }
+    .hint { position:relative; margin:24px 0 0; color:#8a99af; font-size:12px; }
+    @media(max-width:480px) { main { padding:16px; } .card { border-radius:24px; } .actions { display:grid; grid-template-columns:1fr; } button,a { width:100%; } }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card" role="alert" aria-labelledby="title">
+      <span class="orb a" aria-hidden="true"></span><span class="orb b" aria-hidden="true"></span>
+      <p class="kicker">SYSTEM STATUS</p>
+      <div class="code" aria-hidden="true">502</div>
+      <h1 id="title">服务暂时不可用</h1>
+      <p class="message">网关暂时无法连接到后端服务，请稍后重新尝试。</p>
+      <div class="actions">
+        <button class="primary" type="button" onclick="window.location.reload()">重新加载</button>
+        <button type="button" onclick="window.history.length > 1 ? window.history.back() : window.location.assign('/')">返回上一页</button>
+      </div>
+      <p class="hint">错误代码：502 · Bad Gateway</p>
+    </section>
+  </main>
+</body>
+</html>

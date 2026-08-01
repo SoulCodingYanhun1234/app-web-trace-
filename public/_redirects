@@ -1,0 +1,8 @@
+# 公开验证必须携带防伪码；无编码入口返回静态 404 页面。
+/verify          /errors/404.html  404
+/verify/         /errors/404.html  404
+/v               /errors/404.html  404
+/v/              /errors/404.html  404
+/verify/:code    /index.html       200
+/v/:code         /index.html       200
+/*               /index.html       200
